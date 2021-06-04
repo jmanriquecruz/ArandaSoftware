@@ -1,0 +1,8 @@
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\bin\Debug\netstandard2.0\SecurityUser.Core.deps.json
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\bin\Debug\netstandard2.0\SecurityUser.Core.dll
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\bin\Debug\netstandard2.0\SecurityUser.Core.pdb
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\obj\Debug\netstandard2.0\SecurityUser.Core.AssemblyInfoInputs.cache
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\obj\Debug\netstandard2.0\SecurityUser.Core.AssemblyInfo.cs
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\obj\Debug\netstandard2.0\SecurityUser.Core.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\obj\Debug\netstandard2.0\SecurityUser.Core.dll
+C:\Users\Usuario\Documents\GitHub\ArandaSoftware\SecurityUser\SecurityUser.Core\obj\Debug\netstandard2.0\SecurityUser.Core.pdb
