@@ -7,18 +7,13 @@ using System.Collections.Generic;
 
 namespace SecurityUser.Core.Entities
 {
-    public partial class User
+    public partial class RolePermission
     {
-        public int IdUser { get; set; }
-        public string LoginName { get; set; }
-        public string Password { get; set; }
-        public string Names { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public int? Age { get; set; }
         public int IdRole { get; set; }
+        public int IdPermission { get; set; }
+        public bool Value { get; set; }
 
+        public virtual Permission IdPermissionNavigation { get; set; }
         public virtual Role IdRoleNavigation { get; set; }
     }
 }

@@ -1,17 +1,20 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using SecurityUser.Core.Interfaces;
+using SecurityUser.Core.Services;
+using SecurityUser.Infrastructure.Data;
 using SecurityUser.Infrastructure.Repositories;
+using SecurityUser.Infrastructure.Filters;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace SecurityUser.Api
 {
@@ -27,9 +30,68 @@ namespace SecurityUser.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options => 
+            {
+                options.Filters.Add<GlobalExceptionFilter>();
+            }).AddNewtonsoftJson(options => {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             #region Dependencies
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+            services.AddDbContext<ArandaSoftDBContext>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("ArandaSoftDB"));
+            });
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddSwaggerGen(doc =>
+           {
+               doc.SwaggerDoc("v1", new OpenApiInfo { Title = "Security User API", Version = "V1" });
+               var securityScheme = new OpenApiSecurityScheme
+               {
+                   Name = "JWT Authentication",
+                   Description = "Enter JWT Bearer token **_only_**",
+                   In = ParameterLocation.Header,
+                   Type = SecuritySchemeType.Http,
+                   Scheme = "bearer", 
+                   BearerFormat = "JWT",
+                   Reference = new OpenApiReference
+                   {
+                       Id = JwtBearerDefaults.AuthenticationScheme,
+                       Type = ReferenceType.SecurityScheme
+                   }
+               };
+               doc.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+               doc.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
+                });
+
+           });
+
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options=> {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Authentication:Issuer"],
+                    ValidAudience = Configuration["Authentication:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Authentication:SecretKey"]))
+                };
+            });
+            services.AddMvc(options => { 
+                
+            }).AddFluentValidation(options => {
+                options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            });
             #endregion
         }
 
@@ -42,9 +104,20 @@ namespace SecurityUser.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();  
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Security User API");
+                options.InjectStylesheet("/swagger-custom/custom-styles.css"); 
+
+                options.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
