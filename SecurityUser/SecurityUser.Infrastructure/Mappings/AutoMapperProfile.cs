@@ -14,6 +14,13 @@ namespace SecurityUser.Infrastructure.Mappings
             CreateMap<UserDTO, User>();
             CreateMap <User,UserDTO>();
             CreateMap<User, UserLoginDTO>().ReverseMap();
+
+
+            CreateMap<Role, RoleDTO>().ReverseMap();
+            CreateMap<Permission, PermissionDTO>();
+          
+
+
         }
     }
 }

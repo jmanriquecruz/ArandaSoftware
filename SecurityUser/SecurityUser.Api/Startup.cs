@@ -44,9 +44,8 @@ namespace SecurityUser.Api
             services.AddDbContext<ArandaSoftDBContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("ArandaSoftDB"));
             });
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IUserService, UserService>();
 
+            #region Documentation
             services.AddSwaggerGen(doc =>
            {
                doc.SwaggerDoc("v1", new OpenApiInfo { Title = "Security User API", Version = "V1" });
@@ -87,6 +86,18 @@ namespace SecurityUser.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Authentication:SecretKey"]))
                 };
             });
+
+            #endregion
+            #region interface and services 
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IPermissionRepository, PermissionRepository>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IPermissionService, PermissionService>();
+
+            #endregion
+
             services.AddMvc(options => { 
                 
             }).AddFluentValidation(options => {

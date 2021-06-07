@@ -32,7 +32,8 @@ namespace SecurityUser.Infrastructure.Repositories
 
         public async Task<User> GetUserById(int id)
         {
-            var user = await _context.User.Include(u=>u.IdRoleNavigation).FirstOrDefaultAsync(x=> x.IdUser == id);
+            var user = await _context.User.
+                        Include(u=>u.IdRoleNavigation).FirstOrDefaultAsync(x=> x.IdUser == id);
 
             return user;
         }
