@@ -6,6 +6,7 @@ namespace SecurityUser.Core.DTOs
 {
     public class UserDTO
     {
+        public int IdUser { get; set; }
         public string LoginName { get; set; }
         public string Password { get; set; }
         public string Names { get; set; }
